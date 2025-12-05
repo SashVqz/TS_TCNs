@@ -35,47 +35,31 @@ Where $\mathcal{F}$ is the series of transformations: `Dilated Conv1d` $\to$ `We
 **Dataset:** Monthly Mean Total Sunspot Number (1749–Present).
 **Source:** SIDC - Solar Influences Data Analysis Center.
 
-The dataset represents the **Schwabe Cycle**, a magnetic phenomenon driven by the sun's dynamo mechanism (differential rotation and convective flows).
-
 ### Preprocessing Strategy
 Raw physical data is rarely ready for Deep Learning. The pipeline (`loadAndPreprocessData`) applies:
 
-1.  **Linear Interpolation:** Physical time series must be continuous. Missing observational months are interpolated to preserve the phase continuity of the magnetic wave.
-2.  **Standardization:** Sunspot numbers vary wildly (0 to 400+). A `StandardScaler` ($\mu=0, \sigma=1$) is applied to normalize activations and gradients.
-3.  **Sliding Window (Sequence Formulation):**
+**Linear Interpolation:** Physical time series must be continuous. Missing observational months are interpolated to preserve the phase continuity of the magnetic wave.
+**Standardization:** Sunspot numbers vary wildly (0 to 400+). A `StandardScaler` ($\mu=0, \sigma=1$) is applied to normalize activations and gradients.
+**Sliding Window (Sequence Formulation):**
     * **Input Window:** 144 months (12 years). This strictly forces the model to see at least one full solar cycle before making a prediction.
     * **Horizon:** 1 month (One-step-ahead prediction).
     * **Tensor Shape:** $(N, 1, 144)$.
 
-## Structure
-
-The project is engineered as a modular python package:
-
-* **`TCN/core/`**:
-    * `TCNmodel.py`: The PyTorch architecture (TemporalBlock, TCNMain).
-    * `optimization.py`: Bayesian hyperparameter search using **Optuna**.
-    * `metrics.py`: Regression metrics (RMSE, NRMSE, MAE).
-    * `plotting.py`: Inspection tools for internal Feature Maps and Kernels.
-* **`notebooks/summary.ipynb`**: Main orchestrator for training and analysis.
-* **`data/`**: Contains the CSV dataset.
-
-## Setup & Usage
-
-### 1. Environment
+## Setup
 ```bash
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-# Bibliography
+## Bibliography
 
-## Deep Learning
+### Deep Learning
 
 * **Bai, S., Kolter, J. Z., & Koltun, V. (2018).** *An Empirical Evaluation of Generic Convolutional and Recurrent Networks for Sequence Modeling.* arXiv:1803.01271.
     > The foundational paper establishing TCNs as a superior alternative to RNNs/LSTMs for sequence modeling.
 
-## Astrophysical Context
+### Astrophysical Context
 
 * **Hathaway, D. H. (2015).** The Solar Cycle. *Living Reviews in Solar Physics, 12(1).*
     > Definitive review of the observational characteristics of the 11-year sunspot cycle.
